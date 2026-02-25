@@ -15,3 +15,5 @@ def test_get_employee(client,created_employee_id):
     emp_id=created_employee_id
     response=client.get(f"/employees/{emp_id}")
     data=response.json()
+    assert data["employee_id"]==emp_id
+    assert data["full_name"] == "chetan kumar"

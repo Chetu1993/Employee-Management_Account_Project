@@ -7,6 +7,8 @@ def test_create_post_method(client):
 
     print(response.json())
     assert response.status_code == 201
+    data = response.json()
+    assert data["full_name"] == "chetan kumar"
 
 
 

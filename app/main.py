@@ -1,5 +1,5 @@
 from fastapi import FastAPI,status,HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 from app.database import init_db,get_connection
 from contextlib import asynccontextmanager
 from app.database import init_db,get_connection
@@ -14,7 +14,7 @@ class Employee(BaseModel):
     full_name:str
     job_title:str
     country:str
-    salary:float
+    salary:float=Field(gt=0)
 
 class EmployeeResponse(Employee):
     employee_id:int
@@ -22,8 +22,6 @@ class EmployeeResponse(Employee):
 
 @app.post("/employees",response_model=EmployeeResponse,status_code=status.HTTP_201_CREATED)
 def create_employee(employee:Employee):
-    if employee.salary<=0:
-        raise HTTPException(status_code=400,detail="salary must be positive")
     conn=get_connection()
     cursor=conn.cursor()
     cursor.execute("insert into employees(full_name,job_title,country,salary) values (?,?,?,?)",

@@ -6,4 +6,4 @@ def test_salary_must_be_positive(client):
         "salary":-20000
     })
 
-    assert response.status_code == 400
+    assert response.status_code == 422

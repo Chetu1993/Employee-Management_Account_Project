@@ -7,6 +7,7 @@ from app.repository import get_employee_by_id,update_employee_in_db
 from app.services import validate_salary_update
 from app.salary_service import calculate_deduction,calculate_salary_details
 from typing import Optional
+from app.salary_metrics import (get_salary_metrics_by_country,get_salary_metrics_by_job_title)
 @asynccontextmanager
 async def lifespan(app:FastAPI):
     init_db()
@@ -102,12 +103,8 @@ def calculate_salary(employee_id: int):
 
 @app.get("/metrics/salary")
 def salary_metrics(country:Optional[str]=None,job_title:Optional[str]=None):
-    conn = get_connection()
-    cursor = conn.cursor()
     if country:
-        cursor.execute("select min(salary),max(salary),avg(salary) from employees where country=?",(country,))
-        result=cursor.fetchone()
-        conn.close()
+        result=get_salary_metrics_by_country(country)
         if not result or result[0] is None:
             raise HTTPException(status_code=404,detail="Employee not found")
         return {"min_salary":result[0],
@@ -115,13 +112,10 @@ def salary_metrics(country:Optional[str]=None,job_title:Optional[str]=None):
                 "average_salary":result[2],}
 
     if job_title:
-        cursor.execute("select avg(salary) from employees where job_title=?",(job_title,))
-        result=cursor.fetchone()
-        conn.close()
+        result=get_salary_metrics_by_job_title(job_title)
         if not result or result[0] is None:
             raise HTTPException(status_code=404,detail="Employee not found")
         return {"average_salary":result[0],}
 
-    conn.close()
     raise HTTPException(status_code=400,detail="Must provide country or job title")
 

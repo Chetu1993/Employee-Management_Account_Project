@@ -22,12 +22,15 @@ class EmployeeResponse(Employee):
 
 @app.post("/employees",response_model=EmployeeResponse,status_code=status.HTTP_201_CREATED)
 def create_employee(employee:Employee):
+    if employee.salary<=0:
+        raise HTTPException(status_code=400,detail="salary must be positive")
     conn=get_connection()
     cursor=conn.cursor()
     cursor.execute("insert into employees(full_name,job_title,country,salary) values (?,?,?,?)",
                    (employee.full_name,employee.job_title,employee.country,employee.salary))
     conn.commit()
     emp_id=cursor.lastrowid
+
     conn.close()
     return EmployeeResponse(employee_id=emp_id,**employee.model_dump())
 

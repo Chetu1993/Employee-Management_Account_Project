@@ -1,6 +1,7 @@
 from fastapi import FastAPI,status,HTTPException
 from pydantic import BaseModel
-
+from database import create_table
+create_table()
 employees_db={}
 employee_id_counter=1
 app=FastAPI()

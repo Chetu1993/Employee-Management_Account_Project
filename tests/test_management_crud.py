@@ -1,5 +1,4 @@
-import pytest
-import app.main as main
+
 def test_create_post_method(client):
     response=client.post("/employees",json={"full_name":"chetan kumar",
                                            "job_title":"backend engineer",

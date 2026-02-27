@@ -25,3 +25,11 @@ def test_salary_cannot_decrease_on_update(client):
     })
 
     assert update_response.status_code == 400
+
+def test_salary_calculation_for_india(client,created_employee_id):
+    response=client.get(f"/employees/{created_employee_id}/salary")
+    assert response.status_code == 200
+    data=response.json()
+    assert data["gross_salary"] == 100000
+    assert data["deduction"] == 10000
+    assert data["net_salary"] ==90000

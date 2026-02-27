@@ -15,7 +15,7 @@ def test_salary_metrics_by_country(client):
     data=response.json()
     assert data["min_salary"] == 100000
     assert data["max_salary"] == 200000
-    assert data["average_salary"] == 150000
+    assert data["average_salary"] == 150000.0
 
 
 def test_salary_metrics_by_job_title(client):

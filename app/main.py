@@ -3,7 +3,8 @@ from pydantic import BaseModel,Field
 from app.database import init_db,get_connection
 from contextlib import asynccontextmanager
 from app.database import init_db,get_connection
-
+from app.repository import get_employee_by_id,update_employee_in_db
+from app.services import validate_salary_update
 @asynccontextmanager
 async def lifespan(app:FastAPI):
     init_db()
@@ -50,24 +51,14 @@ def get_employee(employee_id:int):
 
 @app.put("/employees/{employee_id}",response_model=EmployeeResponse)
 def update_employee(employee_id:int,employee:Employee):
-    conn=get_connection()
-    cursor=conn.cursor()
-    cursor.execute("select * from employees where employee_id=?",(employee_id,))
-    conn.commit()
-    cursor.execute("select * from employees where employee_id=?",(employee_id,))
-    existing=cursor.fetchone()
+
+    existing=get_employee_by_id(employee_id)
     if not existing:
-        conn.close()
+
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Employee not found")
-    if employee.salary<existing["salary"]:
-        conn.close()
-        raise HTTPException(status_code=400,detail="Salary cannout decrease")
-    cursor.execute("""update employees set full_name=?,job_title=?,country=?,salary=? where employee_id=?""",
-                   (employee.full_name,employee.job_title,employee.country,employee.salary,employee_id))
-    conn.commit()
-    cursor.execute("select * from employees where employee_id=?",(employee_id,))
-    updated=cursor.fetchone()
-    conn.close()
+    validate_salary_update(existing["salary"],employee.salary)
+    updated=update_employee_in_db(employee_id=employee_id,employee=employee)
+
     return EmployeeResponse(employee_id=updated["employee_id"],
                             full_name=updated["full_name"],
                             job_title=updated["job_title"],

@@ -1,5 +1,4 @@
 import pytest
-from app.database import get_connection,init_db
 from app import main
 from fastapi.testclient import TestClient
 
@@ -25,8 +24,8 @@ def created_employee_id(client):
 
 @pytest.fixture(autouse=True)
 def reset_employees():
-    init_db()
-    conn=get_connection()
+    main.init_db()
+    conn=main.get_connection()
     cursor=conn.cursor()
     cursor.execute('''delete from employees''')
     conn.commit()

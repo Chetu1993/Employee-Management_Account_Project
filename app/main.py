@@ -30,6 +30,15 @@ def get_employee(employee_id:int):
     employee=employees_db[employee_id]
     return EmployeeResponse(employee_id=employee_id,**employee.model_dump())
 
+@app.put("/employees/{employee_id}",response_model=EmployeeResponse,status_code=status.HTTP_200_OK)
+def update_employee(employee_id:int,updated_employee:Employee):
+    if employee_id not in employees_db:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Employee not found")
+    employees_db[employee_id]=updated_employee
+    return EmployeeResponse(employee_id=employee_id,**updated_employee.model_dump())
+
+
+
 
 
 

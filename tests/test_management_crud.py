@@ -1,4 +1,5 @@
-
+import pytest
+import app.main as main
 def test_create_post_method(client):
     response=client.post("/employees",json={"full_name":"chetan kumar",
                                            "job_title":"backend engineer",
@@ -41,4 +42,8 @@ def test_delete_employee(client):
     delete_response = client.delete(f"/employees/{emp_id}")
     assert delete_response.status_code == 204
     get_response=client.get(f"/employees/{emp_id}")
-    assert get_response.status_code == 204
+    assert get_response.status_code == 404
+
+def test_delete_non_existing_employee(client):
+    response = client.delete("/employees/999")
+    assert response.status_code == 404

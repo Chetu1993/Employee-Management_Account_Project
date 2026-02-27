@@ -1,7 +1,10 @@
 import pytest
 
-from app.main import app
+from app import main
 from fastapi.testclient import TestClient
+
+from app.main import app,employees_db
+
 
 @pytest.fixture
 def client():
@@ -20,3 +23,8 @@ def created_employee_id(client):
     assert response.status_code == 201
     data = response.json()
     return data["employee_id"]
+
+@pytest.fixture(autouse=True)
+def reset_employees():
+    main.employees_db.clear()
+    main.employee_id_counter=1

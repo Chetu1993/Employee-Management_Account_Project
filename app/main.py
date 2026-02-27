@@ -82,5 +82,33 @@ def delete_employee(employee_id:int):
 
 
 
+@app.get("/employees/{employee_id}/salary")
+def calculate_salary(employee_id: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT country, salary FROM employees WHERE employee_id=?", (employee_id,))
+    employee = cursor.fetchone()
+    conn.close()
+
+    if not employee:
+        raise HTTPException(status_code=404, detail="Employee not found")
+
+    country, gross_salary = employee
+
+    # Minimal logic for GREEN phase
+    if country == "India":
+        deduction = gross_salary * 0.10
+    elif country == "United States":
+        deduction = gross_salary * 0.12
+    else:
+        deduction = 0
+
+    net_salary = gross_salary - deduction
+
+    return {
+        "gross_salary": gross_salary,
+        "deduction": deduction,
+        "net_salary": net_salary
+    }
 
 

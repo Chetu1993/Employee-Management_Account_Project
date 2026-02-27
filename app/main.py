@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from app.database import init_db,get_connection
 from app.repository import get_employee_by_id,update_employee_in_db
 from app.services import validate_salary_update
+from app.salary_service import calculate_deduction,calculate_salary_details
 @asynccontextmanager
 async def lifespan(app:FastAPI):
     init_db()
@@ -95,20 +96,6 @@ def calculate_salary(employee_id: int):
 
     country, gross_salary = employee
 
-    # Minimal logic for GREEN phase
-    if country == "India":
-        deduction = gross_salary * 0.10
-    elif country == "United States":
-        deduction = gross_salary * 0.12
-    else:
-        deduction = 0
-
-    net_salary = gross_salary - deduction
-
-    return {
-        "gross_salary": gross_salary,
-        "deduction": deduction,
-        "net_salary": net_salary
-    }
+    return calculate_salary_details(country,gross_salary)
 
 

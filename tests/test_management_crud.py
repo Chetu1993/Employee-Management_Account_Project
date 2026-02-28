@@ -13,7 +13,7 @@ def test_create_post_method(client):
     update_response = client.put(f"/employees/{emp_id}", json={"full_name": "chetan",
                                                                "job_title": "frontend engineer",
                                                                "country": "India",
-                                                               "salary": 50000})
+                                                               "salary": 150000})
 
     assert update_response.status_code == 200
     data = update_response.json()

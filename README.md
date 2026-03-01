@@ -1,4 +1,4 @@
-!(Employee Management Account)(Images/Employee_Management_Account.png)
+![Employee Management Account](Images/Employee_Management_Account.png)
 
 # Incubyte Salary Management API
 ### Overview

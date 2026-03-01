@@ -1,9 +1,7 @@
 ![Employee Management Account](Images/Employee_Management_Account.png)
 
-# Incubyte Salary Management API
+# Employee Salary Management API
 ### Overview
-
-This project implements a Salary Management API as part of the Incubyte engineering hiring process.
 
 The application provides:
 

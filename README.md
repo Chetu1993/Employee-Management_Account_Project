@@ -1,3 +1,5 @@
+!(Employee Management Account)(Images/Employee_Management_Account.png)
+
 # Incubyte Salary Management API
 ### Overview
 
